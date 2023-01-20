@@ -1,38 +1,20 @@
 local file_man = require("shared.files")
 local md5_helper = require("shared.md5")
 local tbl_helper = require("shared.table")
+local modules = require("shared.modules")
 
-local builtins_plgs_folder_path = '/lua/core/plugins/builtins'
-local user_plgs_folder_path = '/lua/plugins'
+local builtins_plgs_folder_path = '/lua/core/builtins'
+local ui_plgs_folder_path = '/lua/core/UI'
 local changes_file_path = vim.fn.stdpath('config') .. "/.plg_check_md5"
 
-local M = {}
-
-local function folder_path_to_requ(folder_path)
-    local req_path = string.gsub(folder_path,'/lua/', '')
-    req_path = req_path:gsub('/', '.')
-    return req_path
-end
-
-local function load_plugs_from_folder(folder_path)
-    local modules = {}
-
-    local req_path = folder_path_to_requ(folder_path)
-
-    for _, file in ipairs(vim.fn.readdir(
-                              vim.fn.stdpath('config') .. folder_path,
-                              [[v:val =~ '\.lua$']])) do
-        local module = require(req_path .. '.' .. file:gsub('%.lua$', ''))
-        table.insert(modules, module)
-    end
-    return modules
-end
+local M = {user_plgs_folder_path = '/lua/plugins'}
 
 local function load_plugs_md5_from_folder(folder_path)
 
     local modules = {}
     local fixed_folder_path = vim.fn.stdpath('config') .. folder_path
-    for _, file in ipairs(vim.fn.readdir(fixed_folder_path, [[v:val =~ '\.lua$']])) do
+    for _, file in ipairs(vim.fn.readdir(fixed_folder_path,
+                                         [[v:val =~ '\.lua$']])) do
 
         local f = file_man.read(fixed_folder_path .. "/" .. file)
         local output = {}
@@ -43,12 +25,25 @@ local function load_plugs_md5_from_folder(folder_path)
     return md5_helper.sumhexa(tbl_helper.to_string(modules))
 end
 
+local function add_plugins_list(src_list, plugins)
+    for _, plugin in ipairs(plugins) do
+        if not plugin.disabled then table.insert(src_list, plugin) end
+    end
+end
+
 function M.load_core_plugins()
-    return load_plugs_from_folder(builtins_plgs_folder_path)
+    -- TODO: core plugins should be inserted from outside this repository, only 
+    -- dynamic plugins load from folders (user plugs) should be loaded from this repository
+    local builtins_plgs = modules.load_from_folder(builtins_plgs_folder_path)
+    local ui_plugs = modules.load_from_folder(ui_plgs_folder_path)
+    local core_plugs = {}
+    add_plugins_list(core_plugs, builtins_plgs)
+    add_plugins_list(core_plugs, ui_plugs)
+    return core_plugs
 end
 
 function M.load_user_plugins()
-    return load_plugs_from_folder(user_plgs_folder_path)
+    return modules.load_from_folder(M.user_plgs_folder_path)
 end
 
 function M.core_plugins_md5()
@@ -56,7 +51,7 @@ function M.core_plugins_md5()
 end
 
 function M.user_plugins_md5()
-    return load_plugs_md5_from_folder(user_plgs_folder_path)
+    return load_plugs_md5_from_folder(M.user_plgs_folder_path)
 end
 
 function M.installed_core_plugins_md5()

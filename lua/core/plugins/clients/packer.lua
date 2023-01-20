@@ -1,3 +1,5 @@
+local packer_plug_cfg = {install_cfg = {{"wbthomason/packer.nvim"}}}
+
 local function install_packer()
     local fn = vim.fn
 
@@ -20,6 +22,10 @@ function M.setup(plugins_cfg)
     install_packer()
     local packer_installed, packer = pcall(require, "packer")
     if not packer_installed then return end
+
+    packer_plug_cfg.disabled = false
+
+    table.insert(plugins_cfg, packer_plug_cfg)
 
     packer.init {
         display = {
@@ -48,8 +54,6 @@ end
 function M.sync()
     local packer_installed, packer = pcall(require, "packer")
     if not packer_installed then return end
-
-        -- logger.info("Plugins change detected, updating...")
-        packer.sync()
+    packer.sync()
 end
 return M

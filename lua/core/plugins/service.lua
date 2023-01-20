@@ -1,33 +1,23 @@
 local file_repository = require "core.plugins.repositories.file_repository"
 
-local M = {plugins_client = {}, repository = file_repository}
+local M = {
+    plugins_client = {},
+    auto_sync = true,
+    repository = file_repository,
+    user_plgs_folder_path = '/lua/plugins'
+}
+
+local plugins_cfg = {}
+
+M.repository.user_plgs_folder_path = M.user_plgs_folder_path
 
 local function is_valid_plugins_client(target) return target.setup end
 
-local function setup_plugs_cfg(plugins_cfg)
-    for _, p in ipairs(plugins_cfg) do if p.setup then p.setup() end end
-end
-
 local function add_plugins_list(src_list, plugins)
     for _, plugin in ipairs(plugins) do
-       if not plugin.disabled then
-          table.insert(src_list, plugin)
-       end
+        if not plugin.disabled then table.insert(src_list, plugin) end
     end
 end
-
-local function load_plugins()
-    local plugins_cfg = {}
-
-    local core_plugs = M.repository.load_core_plugins()
-    local additional_plugs = M.repository.load_user_plugins()
-
-    add_plugins_list(plugins_cfg,core_plugs)
-    add_plugins_list(plugins_cfg,additional_plugs)
-
-   return plugins_cfg
-end
-
 
 local function plgs_did_change()
     local core_plg_md5 = M.repository.installed_core_plugins_md5()
@@ -46,23 +36,47 @@ local function plgs_did_change()
     return false
 end
 
-function M.setup()
+local function setup_plugs_cfg(cfg)
+    for _, p in ipairs(cfg) do if p.setup then p.setup() end end
+end
+
+function M.load_all()
     if not is_valid_plugins_client(M.plugins_client) then
         -- TODO: log something --
         return
     end
 
-    local plugins_cfg = load_plugins()
+    local plugins_list = {}
 
-    M.plugins_client.setup(plugins_cfg)
+    local core_plugs = M.repository.load_core_plugins()
+    local user_plugins = M.repository.load_user_plugins()
 
-    if plgs_did_change() and M.plugins_client.sync then
-        -- logger.info("Plugins change detected, updating...")
+    add_plugins_list(plugins_list, core_plugs)
+    add_plugins_list(plugins_list, plugins_cfg)
+    add_plugins_list(plugins_list, user_plugins)
+
+    M.plugins_client.setup(plugins_list)
+
+    if M.auto_sync and plgs_did_change() and M.plugins_client.sync then
         M.plugins_client.sync()
-        return
     end
+end
 
+function M.batch_add(plugins_list)
+    for _, plg_cfg in ipairs(plugins_list) do
+        table.insert(plugins_cfg, plg_cfg)
+    end
+end
+
+function M.setup_core_plugins()
+    local core_plugins = M.repository.load_core_plugins()
+    setup_plugs_cfg(core_plugins)
     setup_plugs_cfg(plugins_cfg)
+end
+
+function M.setup_user_plugins()
+    local user_plugins = M.repository.load_user_plugins()
+    setup_plugs_cfg(user_plugins)
 end
 
 return M

@@ -1,3 +1,17 @@
+local default_opts = {
+    defaults = {
+        lazy = true, -- should plugins be lazy-loaded?
+        -- version = "*", -- enable this to try installing the latest stable versions of plugins
+      },
+    checker = {
+        -- automatically check for plugin updates
+        enabled = true,
+        concurrency = nil, ---@type number? set to 1 to check for updates very slowly
+        notify = true, -- get a notification when new updates are found
+        frequency = 21600, -- check for updates every hour
+      },
+}
+
 local function bootstrap()
     local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
     if not vim.loop.fs_stat(lazypath) then
@@ -29,7 +43,13 @@ function M.setup(plugins_cfg)
     local lazy_installed, lazy = pcall(require, "lazy")
     if not lazy_installed then return end
 
-    lazy.setup(plugins_cfg_to_lazy_plugs(plugins_cfg))
+    lazy.setup(plugins_cfg_to_lazy_plugs(plugins_cfg), default_opts)
+end
+
+function M.sync()
+    local lazy_installed, lazy = pcall(require, "lazy")
+    if not lazy_installed then return end
+    lazy.sync()
 end
 
 return M
