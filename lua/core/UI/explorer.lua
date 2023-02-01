@@ -22,7 +22,11 @@ local M = {
     },
     indent_markers = true,
     update_focused_file = true,
-    quit_on_open = true
+    quit_on_open = true,
+    diagnostics = {
+        enable = true,
+        icons = {hint = "", info = "", warning = "", error = ""}
+    }
 }
 
 function M.setup()
@@ -72,7 +76,8 @@ function M.setup()
                     exclude = M.exclude
                 }
             }
-        }
+        },
+        diagnostics = M.diagnostics
     } -- END_DEFAULT_OPTS
 end
 

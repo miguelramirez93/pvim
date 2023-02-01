@@ -1,7 +1,6 @@
 local plugs_service = require "core.plugins.service"
 local conf_service = require "core.config.service"
 local colorschemes = require "core.UI.colorschemes"
-local logger = require "shared.logger"
 
 local M = {
     plugs = {
