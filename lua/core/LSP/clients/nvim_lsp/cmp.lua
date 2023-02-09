@@ -35,10 +35,14 @@ local kind_icons = {
 
 local plug_cfg = {
     install_cfg = {
-        {"hrsh7th/nvim-cmp"}, {"hrsh7th/cmp-buffer"}, {"hrsh7th/cmp-path"},
-        {"hrsh7th/cmp-cmdline"}, {"saadparwaiz1/cmp_luasnip"},
-        {"L3MON4D3/LuaSnip"}, {"hrsh7th/cmp-nvim-lsp"},
-        {"hrsh7th/cmp-nvim-lsp-signature-help"}
+        {"hrsh7th/nvim-cmp", lazy = false},
+        {"hrsh7th/cmp-buffer", lazy = false},
+        {"hrsh7th/cmp-path", lazy = false},
+        {"hrsh7th/cmp-cmdline", lazy = false},
+        {"saadparwaiz1/cmp_luasnip", lazy = false},
+        {"L3MON4D3/LuaSnip", lazy = false},
+        {"hrsh7th/cmp-nvim-lsp", lazy = false},
+        {"hrsh7th/cmp-nvim-lsp-signature-help", lazy = false}
     }
 }
 

@@ -1,4 +1,4 @@
-local M = {install_cfg = {{"ray-x/lsp_signature.nvim"}}}
+local M = {install_cfg = {{"ray-x/lsp_signature.nvim"}}, disabled = true}
 
 function M.setup()
     local status_ok, lsp_signature = pcall(require, "lsp_signature")

@@ -4,7 +4,7 @@ local plug_cfg = {
         {"rafamadriz/friendly-snippets", lazy = false},
         {"williamboman/nvim-lsp-installer", lazy = false},
         {"tamago324/nlsp-settings.nvim", lazy = false},
-        {"antoinemadec/FixCursorHold.nvim", lazy = false}
+        {"antoinemadec/FixCursorHold.nvim"}
     }
 }
 
