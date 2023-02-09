@@ -5,7 +5,7 @@ local modules = require("shared.modules")
 
 local builtins_plgs_folder_path = '/lua/core/builtins'
 local ui_plgs_folder_path = '/lua/core/UI'
-local changes_file_path = vim.fn.stdpath('data') .. "/.plg_check_md5"
+local changes_file_path = vim.fn.stdpath('config') .. "/.plg_check_md5"
 
 local M = {user_plgs_folder_path = '/lua/plugins'}
 
