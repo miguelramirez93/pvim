@@ -5,5 +5,5 @@ rm -rf ~/.config/nvim
 mkdir -p ~/.config/nvim/lua
 mv ~/.config/plugins_bk ~/.config/nvim/lua/plugins 
 rm -rf  ~/.config/plugins_bk
-cp -r ../lua/ ~/.config/nvim/lua
+cp -r ../lua/* ~/.config/nvim/lua
 cp ../init.lua ~/.config/nvim/init.lua
