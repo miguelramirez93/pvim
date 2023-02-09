@@ -5,13 +5,13 @@ local modules = require("shared.modules")
 
 local builtins_plgs_folder_path = '/lua/core/builtins'
 local ui_plgs_folder_path = '/lua/core/UI'
-local changes_file_path = vim.fn.stdpath('config') .. "/.plg_check_md5"
+local changes_file_path = vim.fn.stdpath('data') .. "/.plg_check_md5"
 
 local M = {user_plgs_folder_path = '/lua/plugins'}
 
 local function load_plugs_md5_from_folder(folder_path)
 
-    local modules = {}
+    local modules_arr = {}
     local fixed_folder_path = vim.fn.stdpath('config') .. folder_path
     for _, file in ipairs(vim.fn.readdir(fixed_folder_path,
                                          [[v:val =~ '\.lua$']])) do
@@ -20,9 +20,9 @@ local function load_plugs_md5_from_folder(folder_path)
         local output = {}
         for each in f:lines() do output[#output + 1] = each end
 
-        table.insert(modules, {tbl_helper.to_string(output)})
+        table.insert(modules_arr, {tbl_helper.to_string(output)})
     end
-    return md5_helper.sumhexa(tbl_helper.to_string(modules))
+    return md5_helper.sumhexa(tbl_helper.to_string(modules_arr))
 end
 
 local function add_plugins_list(src_list, plugins)
