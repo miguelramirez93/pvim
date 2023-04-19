@@ -36,8 +36,32 @@ local function plgs_did_change()
     return false
 end
 
+local function get_os_type()
+    if package.config:sub(1, 1) == '\\' then
+        return "windows"
+    else
+        local f = io.popen("uname -s")
+        local uname_output = f:read("*a")
+        f:close()
+
+        if uname_output == "Darwin\n" then
+            return "macos"
+        else
+            return "linux"
+        end
+    end
+end
+
 local function setup_plugs_cfg(cfg)
-    for _, p in ipairs(cfg) do if p.setup then p.setup() end end
+    for _, p in ipairs(cfg) do
+        if p.setup then p.setup() end
+        local os_type = get_os_type()
+        if os_type == "linux" then
+            if p.install_linux_deps then p.install_linux_deps() end
+        elseif os_type == "macos" then
+            if p.install_macos_deps then p.install_macos_deps() end
+        end
+    end
 end
 
 function M.load_all()

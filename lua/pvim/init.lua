@@ -1,6 +1,8 @@
 local plugs_service = require "core.plugins.service"
 local conf_service = require "core.config.service"
 local colorschemes = require "core.UI.colorschemes"
+local log_service = require "shared.logger"
+local os_service = require "shared.os"
 
 local M = {
     plugs = {
@@ -24,6 +26,8 @@ local M = {
         client = require "core.LSP.clients.nvim_lsp.client",
         disabled = false
     },
+    OS = os_service,
+    log = log_service,
     builtins = {
         autopairs = require "core.builtins.autopairs",
         word_under_cursor = require "core.builtins.word_under_cursor",
