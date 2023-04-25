@@ -2,7 +2,7 @@ local default_disabled_filetypes = {"alpha", "dashboard", "NvimTree", "Outline"}
 local M = {
     disabled = false,
     install_cfg = {{"nvim-lualine/lualine.nvim"}},
-    disabled_filetypes = {},
+    disabled_filetypes = {}
 }
 
 local hide_in_width = function() return vim.fn.winwidth(0) > 80 end
@@ -30,7 +30,7 @@ function M.setup()
 
     local mode = {
         "mode",
-        fmt = function(str) return " [[ " .. str .. " ]]" end
+        fmt = function(str) return " <<" .. str .. ">>" end
     }
 
     local filetype = {"filetype", icons_enabled = true, icon = nil}
